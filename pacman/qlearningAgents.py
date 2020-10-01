@@ -83,9 +83,9 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         # iad DONE
         legalActions = self.getLegalActions(state)
-        action = None
+        bestAction = None
         if not legalActions:
-            return action
+            return bestAction
         bestAction = legalActions[1]
         bestValue = getQValue(state,bestAction)
         for action in legalActions[1:]:
@@ -93,7 +93,7 @@ class QLearningAgent(ReinforcementAgent):
             if bestValue < value:
                 bestAction = action
                 bestValue = value
-        return action
+        return bestAction
 
     def getAction(self, state):
         """
