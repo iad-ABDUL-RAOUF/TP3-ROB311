@@ -142,7 +142,7 @@ class QLearningAgent(ReinforcementAgent):
 
         #madeleine done
         pos = state.getPosition()
-        self.Qvalues[(pos[0],pos[1],action)] = (1-self.alpha)*self.Qvalues[(pos[0],pos[1],action)] + self.alpha*[reward + self.discount*self.computeValueFromQValues(nextState)]
+        self.Qvalues[(pos[0],pos[1],action)] = (1-self.alpha)*self.Qvalues[(pos[0],pos[1],action)] + self.alpha*(reward + self.discount*self.computeValueFromQValues(nextState))
 
         #util.raiseNotDefined()
 
