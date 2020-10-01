@@ -51,8 +51,15 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
+        # iad done
+        # util.raiseNotDefined()
+        value = 0.0
+        pos = state.getPosition()
+        if not (pos[0],pos[1],action) in self.Qvalues:
+            self.Qvalues[(pos[0],pos[1],action)] = value
+            return value
+        value = self.Qvalues[(pos[0],pos[1],action)]
+        return value
 
     def computeValueFromQValues(self, state):
         """
