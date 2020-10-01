@@ -56,7 +56,7 @@ class QLearningAgent(ReinforcementAgent):
         # iad done
         # util.raiseNotDefined()
         value = 0.0
-        pos = state.getPosition()
+        pos = state.getPacmanPosition()
         if not (pos[0],pos[1],action) in self.Qvalues:
             self.Qvalues[(pos[0],pos[1],action)] = value
             return value
@@ -76,9 +76,9 @@ class QLearningAgent(ReinforcementAgent):
         bestValue = 0.0
         if not legalActions:
             return bestValue
-        bestValue = getQValue(state,legalActions[1])
+        bestValue = self.getQValue(state,legalActions[1])
         for action in legalActions[1:]:
-            value = getQValue(state,action)
+            value = self.getQValue(state,action)
             if bestValue < value:
                 bestValue = value
         return bestValue
@@ -96,9 +96,9 @@ class QLearningAgent(ReinforcementAgent):
         if not legalActions:
             return bestAction
         bestAction = legalActions[1]
-        bestValue = getQValue(state,bestAction)
+        bestValue = self.getQValue(state,bestAction)
         for action in legalActions[1:]:
-            value = getQValue(state,action)
+            value = self.getQValue(state,action)
             if bestValue < value:
                 bestAction = action
                 bestValue = value
@@ -125,6 +125,7 @@ class QLearningAgent(ReinforcementAgent):
         isRandomAction = util.flipCoin(self.epsilon)
         if isRandomAction:
             action = random.choice(self.getLegalActions(state))
+            
         else:
             action = self.getPolicy(state)
         return action
@@ -141,10 +142,8 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
 
         #madeleine done
-        pos = state.getPosition()
-        self.Qvalues[(pos[0],pos[1],action)] = (1-self.alpha)*self.Qvalues[(pos[0],pos[1],action)] + self.alpha*(reward + self.discount*self.computeValueFromQValues(nextState))
-
-        #util.raiseNotDefined()
+        pos = state.getPacmanPosition()
+        self.Qvalues[(pos[0],pos[1],action)] = (1-self.alpha)*self.getQValue(state, action) + self.alpha*(reward + self.discount*self.computeValueFromQValues(nextState))
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
