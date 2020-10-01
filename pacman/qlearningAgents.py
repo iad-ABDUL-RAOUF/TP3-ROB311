@@ -16,7 +16,7 @@ from game import *
 from learningAgents import ReinforcementAgent
 from featureExtractors import *
 
-import random,util,math
+import random,util,math, numpy as np
 
 class QLearningAgent(ReinforcementAgent):
     """
@@ -42,6 +42,12 @@ class QLearningAgent(ReinforcementAgent):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
 
+        #Initialisation de Q : quelle taille ? Quatre actions possibles par etat : les quatre directions.
+        # Combien d'etats possibles ? Il y a une fonction getStates de la classe Grid, mais on n'en herite pas.
+        #Je ne suis pas sure qu'on ait le droit de rajouter des arguments a l'initialisation, j'ai peur que 
+        # ca fasse des bugs. Qu'en penses-tu ?
+        # Les fonctions sont utilisees dans le fichier reinforcementTestClasses.py, pour essayer de trouver les types des arguments d'entree
+        self.Q=np.zeros() 
         "*** YOUR CODE HERE ***"
 
     def getQValue(self, state, action):
