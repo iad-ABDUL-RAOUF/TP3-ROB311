@@ -16,7 +16,7 @@ from game import *
 from learningAgents import ReinforcementAgent
 from featureExtractors import *
 
-import random,util,math
+import random,util,math, numpy as np
 
 class QLearningAgent(ReinforcementAgent):
     """
@@ -56,11 +56,12 @@ class QLearningAgent(ReinforcementAgent):
         # iad done
         # util.raiseNotDefined()
         value = 0.0
-        pos = state.getPacmanPosition()
-        if not (pos[0],pos[1],action) in self.Qvalues:
-            self.Qvalues[(pos[0],pos[1],action)] = value
+        pos_pacman = state.getPacmanPosition()
+        pos_ghost = state.getGhostPosition(1) #gets the position of the first ghost
+        if not (pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action) in self.Qvalues:
+            self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)] = value
             return value
-        value = self.Qvalues[(pos[0],pos[1],action)]
+        value = self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)]
         return value
 
     def computeValueFromQValues(self, state):
@@ -206,14 +207,26 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        #madeleine done ? Not sure that this is what was meant.
+        value = np.dot(self.weights, self.featExtractor)
+        pos_pacman = state.getPacmanPosition()
+        pos_ghost = state.getGhostPosition(1) #gets the position of the first ghost
+        self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)] = value
+        return value
+
+        return 
 
     def update(self, state, action, nextState, reward):
         """
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        #madeleine done Formule du cours de berkley, j'espere que je l'ai bien traduite avec nos matrices
+        self.weights = self.weights + self.alpha*((reward + self.discount*self.computeActionFromQValues(nextState)) - self.getQValue(state,action))*self.featExtractor
+
+        #util.raiseNotDefined()
 
     def final(self, state):
         "Called at the end of each game."
