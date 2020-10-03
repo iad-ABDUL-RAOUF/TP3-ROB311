@@ -37,6 +37,9 @@ class QLearningAgent(ReinforcementAgent):
       Functions you should use
         - self.getLegalActions(state)
           which returns legal actions for a state
+          
+      Here the Q-table is not directly on (s,a) but on (b1,b2) (see getQValue 
+      and setQValue)
     """
     def __init__(self, **args):
         "You can initialize Q-values here..."
@@ -51,19 +54,40 @@ class QLearningAgent(ReinforcementAgent):
           Should return 0.0 if we have never seen a state
           or the Q node value otherwise
         """
-        value = 0.0
-        pos_pacman = state.getPacmanPosition()
-        pos_ghost = state.getGhostPosition(1) #gets the position of the first ghost
-        if not (pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action) in self.Qvalues:
-            self.setQValue(state, action, value)
-            return value
-        value = self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)]
+        # transform (s,a) into (b1,b2) with b1 b2 two boolean
+        features = SimpleExtractor.getFeatures(SimpleExtractor,state, action)
+        if features["#-of-ghosts-1-step-away"]:
+            isThereGhost = True
+        else:
+            isThereGhost = False
+        actionToClosestFood = findActionToClosestFood(state)
+        if action == actionToClosestFood:
+            isActionToClosestFood = True
+        else:
+            isActionToClosestFood = False        
+        
+        defaultValue = 0.0
+        if not (isThereGhost,isActionToClosestFood) in self.Qvalues:
+            self.setQValue(state, action, defaultValue)
+            return defaultValue
+        value = self.Qvalues[(isThereGhost,isActionToClosestFood)]
         return value
 
     def setQValue(self, state, action, value):
-        pos_pacman = state.getPacmanPosition()
-        pos_ghost = state.getGhostPosition(1)
-        self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)] = value
+        
+        features = SimpleExtractor.getFeatures(SimpleExtractor,state, action)
+        if features["#-of-ghosts-1-step-away"]:
+            isThereGhost = True
+        else:
+            isThereGhost = False
+        
+        actionToClosestFood = findActionToClosestFood(state)
+        if action == actionToClosestFood:
+            isActionToClosestFood = True
+        else:
+            isActionToClosestFood = False
+        
+        self.Qvalues[(isThereGhost,isActionToClosestFood)] = value
     
     def computeValueFromQValues(self, state):
         """
