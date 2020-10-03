@@ -82,7 +82,7 @@ class QLearningAgent(ReinforcementAgent):
         bestValue = 0.0
         if not legalActions:
             return bestValue
-        bestValue = self.getQValue(state,legalActions[1])
+        bestValue = self.getQValue(state,legalActions[0])
         for action in legalActions[1:]:
             value = self.getQValue(state,action)
             if bestValue < value:
@@ -101,7 +101,7 @@ class QLearningAgent(ReinforcementAgent):
         bestAction = None
         if not legalActions:
             return bestAction
-        bestAction = legalActions[1]
+        bestAction = legalActions[0]
         bestValue = self.getQValue(state,bestAction)
         for action in legalActions[1:]:
             value = self.getQValue(state,action)
