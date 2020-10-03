@@ -63,6 +63,35 @@ def closestFood(pos, food, walls):
     # no food found
     return None
 
+def findActionToClosestFood(state):
+    '''
+    find out which action go towards the nearest food location
+    '''
+    
+    # extract the grid of food, wall locations, pacman locations and legal actions
+    food = state.getFood()
+    walls = state.getWalls()
+    x, y = state.getPacmanPosition()
+    legalActions = state.getLegalActions()
+    
+    # check whether there are legal actions  
+    if not legalActions:
+        return None
+    
+    # find which action lead to the nearest food
+    bestAction = legalActions[0]
+    dx, dy = Actions.directionToVector(bestAction)
+    next_x, next_y = int(x + dx), int(y + dy)
+    shortestDist = closestFood((next_x, next_y), food, walls)
+    for action in legalActions[1:]:
+        dx, dy = Actions.directionToVector(action)
+        next_x, next_y = int(x + dx), int(y + dy)
+        dist = closestFood((next_x, next_y), food, walls)
+        if shortestDist > dist:
+            bestAction = action
+            shortestDist = dist
+    return bestAction
+
 class SimpleExtractor(FeatureExtractor):
     """
     Returns simple features for a basic reflex Pacman:
