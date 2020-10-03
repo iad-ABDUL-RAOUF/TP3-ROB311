@@ -16,7 +16,7 @@ from game import *
 from learningAgents import ReinforcementAgent
 from featureExtractors import *
 
-import random,util,math
+import random,util,math, numpy as np
 
 class QLearningAgent(ReinforcementAgent):
     """
@@ -55,13 +55,19 @@ class QLearningAgent(ReinforcementAgent):
         # iad done
         # util.raiseNotDefined()
         value = 0.0
-        pos = state.getPacmanPosition()
-        if not (pos[0],pos[1],action) in self.Qvalues:
-            self.Qvalues[(pos[0],pos[1],action)] = value
+        pos_pacman = state.getPacmanPosition()
+        pos_ghost = state.getGhostPosition(1) #gets the position of the first ghost
+        if not (pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action) in self.Qvalues:
+            self.setQValue(state, action, value)
             return value
-        value = self.Qvalues[(pos[0],pos[1],action)]
+        value = self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)]
         return value
 
+    def setQValue(self, state, action, value):
+        pos_pacman = state.getPacmanPosition()
+        pos_ghost = state.getGhostPosition(1)
+        self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)] = value
+    
     def computeValueFromQValues(self, state):
         """
           Returns max_action Q(state,action)
@@ -75,7 +81,7 @@ class QLearningAgent(ReinforcementAgent):
         bestValue = 0.0
         if not legalActions:
             return bestValue
-        bestValue = self.getQValue(state,legalActions[1])
+        bestValue = self.getQValue(state,legalActions[0])
         for action in legalActions[1:]:
             value = self.getQValue(state,action)
             if bestValue < value:
@@ -94,7 +100,7 @@ class QLearningAgent(ReinforcementAgent):
         bestAction = None
         if not legalActions:
             return bestAction
-        bestAction = legalActions[1]
+        bestAction = legalActions[0]
         bestValue = self.getQValue(state,bestAction)
         for action in legalActions[1:]:
             value = self.getQValue(state,action)
@@ -141,8 +147,8 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
 
         #madeleine done
-        pos = state.getPacmanPosition()
-        self.Qvalues[(pos[0],pos[1],action)] = (1-self.alpha)*self.getQValue(state, action) + self.alpha*(reward + self.discount*self.computeValueFromQValues(nextState))
+        newValue = (1-self.alpha)*self.getQValue(state, action) + self.alpha*(reward + self.discount*self.computeValueFromQValues(nextState))
+        self.setQValue(state, action, newValue)
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
@@ -205,14 +211,26 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        #madeleine done ? Not sure that this is what was meant.
+        value = np.dot(self.weights, self.featExtractor)
+        pos_pacman = state.getPacmanPosition()
+        pos_ghost = state.getGhostPosition(1) #gets the position of the first ghost
+        self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)] = value
+        return value
+
+        return 
 
     def update(self, state, action, nextState, reward):
         """
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        #madeleine done Formule du cours de berkley, j'espere que je l'ai bien traduite avec nos matrices
+        self.weights = self.weights + self.alpha*((reward + self.discount*self.computeActionFromQValues(nextState)) - self.getQValue(state,action))*self.featExtractor
+
+        #util.raiseNotDefined()
 
     def final(self, state):
         "Called at the end of each game."
