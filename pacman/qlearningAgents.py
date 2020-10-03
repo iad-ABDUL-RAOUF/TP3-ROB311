@@ -51,9 +51,6 @@ class QLearningAgent(ReinforcementAgent):
           Should return 0.0 if we have never seen a state
           or the Q node value otherwise
         """
-        "*** YOUR CODE HERE ***"
-        # iad done
-        # util.raiseNotDefined()
         value = 0.0
         pos_pacman = state.getPacmanPosition()
         pos_ghost = state.getGhostPosition(1) #gets the position of the first ghost
@@ -75,8 +72,6 @@ class QLearningAgent(ReinforcementAgent):
           there are no legal actions, which is the case at the
           terminal state, you should return a value of 0.0.
         """
-        "*** YOUR CODE HERE ***"
-        #iad DONE
         legalActions = self.getLegalActions(state)
         bestValue = 0.0
         if not legalActions:
@@ -94,8 +89,6 @@ class QLearningAgent(ReinforcementAgent):
           are no legal actions, which is the case at the terminal state,
           you should return None.
         """
-        "*** YOUR CODE HERE ***"
-        # iad DONE
         legalActions = self.getLegalActions(state)
         bestAction = None
         if not legalActions:
@@ -123,8 +116,6 @@ class QLearningAgent(ReinforcementAgent):
         # Pick Action
         legalActions = self.getLegalActions(state)
         action = None
-        "*** YOUR CODE HERE ***"
-        # iad DONE
         if not legalActions:
             return action
         isRandomAction = util.flipCoin(self.epsilon)
@@ -144,9 +135,6 @@ class QLearningAgent(ReinforcementAgent):
           NOTE: You should never call this function,
           it will be called on your behalf
         """
-        "*** YOUR CODE HERE ***"
-
-        #madeleine done
         newValue = (1-self.alpha)*self.getQValue(state, action) + self.alpha*(reward + self.discount*self.computeValueFromQValues(nextState))
         self.setQValue(state, action, newValue)
 
