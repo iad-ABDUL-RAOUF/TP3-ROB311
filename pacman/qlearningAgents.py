@@ -59,11 +59,16 @@ class QLearningAgent(ReinforcementAgent):
         pos_pacman = state.getPacmanPosition()
         pos_ghost = state.getGhostPosition(1) #gets the position of the first ghost
         if not (pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action) in self.Qvalues:
-            self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)] = value
+            self.setQValue(state, action, value)
             return value
         value = self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)]
         return value
 
+    def setQValue(self, state, action, value):
+        pos_pacman = state.getPacmanPosition()
+        pos_ghost = state.getGhostPosition(1)
+        self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)] = value
+    
     def computeValueFromQValues(self, state):
         """
           Returns max_action Q(state,action)
@@ -143,8 +148,8 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
 
         #madeleine done
-        pos = state.getPacmanPosition()
-        self.Qvalues[(pos[0],pos[1],action)] = (1-self.alpha)*self.getQValue(state, action) + self.alpha*(reward + self.discount*self.computeValueFromQValues(nextState))
+        newValue = (1-self.alpha)*self.getQValue(state, action) + self.alpha*(reward + self.discount*self.computeValueFromQValues(nextState))
+        self.setQValue(state, action, newValue)
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
