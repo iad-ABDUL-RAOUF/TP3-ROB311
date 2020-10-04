@@ -16,7 +16,7 @@ from game import *
 from learningAgents import ReinforcementAgent
 from featureExtractors import *
 
-import random,util,math, numpy as np
+import random,util,math
 
 class QLearningAgent(ReinforcementAgent):
     """
@@ -201,10 +201,14 @@ class ApproximateQAgent(PacmanQAgent):
         "*** YOUR CODE HERE ***"
 
         #madeleine done ? Not sure that this is what was meant.
-        value = np.dot(self.weights, self.featExtractor)
-        pos_pacman = state.getPacmanPosition()
-        pos_ghost = state.getGhostPosition(1) #gets the position of the first ghost
-        self.Qvalues[(pos_pacman[0],pos_pacman[1],pos_ghost[0],pos_ghost[1],action)] = value
+        featureVector=SimpleExtractor.getFeatures(SimpleExtractor,state,action)
+        print("weights = ")
+        print(self.weights)
+        print("\nfeatures = ")
+        print(featureVector)
+        value = 0
+        for key in featureVector:
+            value += weights[key]*featureVector[key]
         return value
 
         return 
