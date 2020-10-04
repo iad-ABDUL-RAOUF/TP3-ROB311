@@ -42,7 +42,6 @@ class QLearningAgent(ReinforcementAgent):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
         "*** YOUR CODE HERE ***"
-        # iad done
         self.Qvalues = {}
 
     def getQValue(self, state, action):
@@ -198,14 +197,8 @@ class ApproximateQAgent(PacmanQAgent):
           Should return Q(state,action) = w * featureVector
           where * is the dotProduct operator
         """
-        "*** YOUR CODE HERE ***"
-
-        #madeleine done ? Not sure that this is what was meant.
         featureVector=SimpleExtractor.getFeatures(SimpleExtractor,state,action)
-        print("weights = ")
-        print(self.weights)
-        print("\nfeatures = ")
-        print(featureVector)
+        weights = self.getWeights()
         value = 0
         for key in featureVector:
             value += weights[key]*featureVector[key]
@@ -217,12 +210,19 @@ class ApproximateQAgent(PacmanQAgent):
         """
            Should update your weights based on transition
         """
-        "*** YOUR CODE HERE ***"
-
-        #madeleine done Formule du cours de berkley, j'espere que je l'ai bien traduite avec nos matrices
-        self.weights = self.weights + self.alpha*((reward + self.discount*self.computeActionFromQValues(nextState)) - self.getQValue(state,action))*self.featExtractor
-
-        #util.raiseNotDefined()
+        # extract current weight and features
+        weights = self.getWeights()
+        featureVector=SimpleExtractor.getFeatures(SimpleExtractor,state,action)
+        
+        # difference between estimated value and actual value
+        expectedValue = self.getQValue(state, action)
+        realValue = reward + self.discount*self.computeValueFromQValues(nextState)
+        difference = expectedValue - realValue
+        
+        #update weights
+        for key in weights:
+            weights[key] = weights[key] - self.alpha * difference * featureVector[key]
+        
 
     def final(self, state):
         "Called at the end of each game."
