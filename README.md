@@ -1,5 +1,5 @@
 # TP3-ROB311
-TP3 solved by madeleine BECKER and iad ABDUL RAOUF.
+TP3 solved by madeleine BECKER and iad ABDUL RAOUF (group 2).
 
 The code is to be found on the master branch. We successfully coded the QLearnningAgent and ApproxiamteQAgent. It runs without errors and learns correctly on the small grid. 
 
